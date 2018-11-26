@@ -90,9 +90,9 @@ def _obs_exp_norm(pSubmatrix):
     return obs_exp_matrix_
 
 
-def _obs_exp(pSubmatrix):
+def _obs_exp(pSubmatrix,exp_matrix = None):
 
-    obs_exp_matrix_ = obs_exp_matrix(pSubmatrix, args.exp_matrix)
+    obs_exp_matrix_ = obs_exp_matrix(pSubmatrix, exp_matrix)
     obs_exp_matrix_ = convertNansToZeros(csr_matrix(obs_exp_matrix_))
     obs_exp_matrix_ = convertInfsToZeros(csr_matrix(obs_exp_matrix_)).todense()
     return obs_exp_matrix_
@@ -142,9 +142,9 @@ def main(args=None):
                 chr_range = hic_ma.getChrBinRange(chrname)
                 submatrix = hic_ma.matrix[chr_range[0]:chr_range[1], chr_range[0]:chr_range[1]]
                 submatrix.astype(float)
-                trasf_matrix[chr_range[0]:chr_range[1], chr_range[0]:chr_range[1]] = lil_matrix(_obs_exp(submatrix))
+                trasf_matrix[chr_range[0]:chr_range[1], chr_range[0]:chr_range[1]] = lil_matrix(_obs_exp(submatrix,args.exp_matrix))
         else:
-            submatrix = _obs_exp(hic_ma.matrix)
+            submatrix = _obs_exp(hic_ma.matrix,args.exp_matrix)
             trasf_matrix = csr_matrix(submatrix)
 
     elif args.method == 'obs_exp_non_zero':

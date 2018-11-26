@@ -311,7 +311,7 @@ def obs_exp_matrix_norm(pSubmatrix):
     return pSubmatrix
 
 
-def obs_exp_matrix_non_zero(pSubmatrix):
+def obs_exp_matrix_non_zero(pSubmatrix, exp_matrix = None):
     """
         Creates normalized contact matrix M* by
         dividing each entry by the gnome-wide
@@ -321,18 +321,23 @@ def obs_exp_matrix_non_zero(pSubmatrix):
         exp_i,j = sum(interactions at distance abs(i-j)) / number of non-zero interactions at abs(i-j)
 
     """
+    if exp_matrix:
+        expected = _get_expected_matrix(exp_matrix)
+        print(pSubmatrix.data.shape, expected.data.shape)
+        #pSubmatrix.data = np.divide( pSubmatrix.data, expected.data)
+        pSubmatrix.data = convertInfsToZeros_ArrayFloat(pSubmatrix.data)
+    else:
+        expected_interactions_in_distance_ = expected_interactions_non_zero(pSubmatrix)
+        row, col = pSubmatrix.nonzero()
+        distance = np.ceil(np.absolute(row - col) / 2).astype(np.int32)
 
-    expected_interactions_in_distance_ = expected_interactions_non_zero(pSubmatrix)
-    row, col = pSubmatrix.nonzero()
-    distance = np.ceil(np.absolute(row - col) / 2).astype(np.int32)
+        if len(pSubmatrix.data) > 0:
+            data_type = type(pSubmatrix.data[0])
 
-    if len(pSubmatrix.data) > 0:
-        data_type = type(pSubmatrix.data[0])
-
-        expected = expected_interactions_in_distance_[distance]
-        pSubmatrix.data = pSubmatrix.data.astype(np.float32)
-        pSubmatrix.data /= expected
-        pSubmatrix.data = convertInfsToZeros_ArrayFloat(pSubmatrix.data).astype(data_type)
+            expected = expected_interactions_in_distance_[distance]
+            pSubmatrix.data = pSubmatrix.data.astype(np.float32)
+            pSubmatrix.data /= expected
+            pSubmatrix.data = convertInfsToZeros_ArrayFloat(pSubmatrix.data).astype(data_type)
     return pSubmatrix
 
 
@@ -346,19 +351,20 @@ def obs_exp_matrix(pSubmatrix, exp_matrix = None):
         exp_i,j = sum(interactions at distance abs(i-j)) / number of non-zero interactions at abs(i-j)
 
     """
-    expected_interactions_in_distance_ = np.empty(pSubmatrix.shape)
     if exp_matrix:
-        expected_interactions_in_distance_ = _get_expected_matrix(exp_matrix)
+        expected = _get_expected_matrix(exp_matrix)
+        pSubmatrix.data = np.divide( pSubmatrix.data, expected.data)
+        pSubmatrix.data = convertInfsToZeros_ArrayFloat(pSubmatrix.data)
     else:
         expected_interactions_in_distance_ = expected_interactions(pSubmatrix)
-    row, col = pSubmatrix.nonzero()
-    distance = np.absolute(row - col).astype(np.int32)
+        row, col = pSubmatrix.nonzero()
+        distance = np.absolute(row - col).astype(np.int32)
 
-    if len(pSubmatrix.data) > 0:
-        expected = expected_interactions_in_distance_[distance]
-        pSubmatrix.data = pSubmatrix.data.astype(np.float32)
-        pSubmatrix.data /= expected
-        pSubmatrix.data = convertInfsToZeros_ArrayFloat(pSubmatrix.data)
+        if len(pSubmatrix.data) > 0:
+             expected = expected_interactions_in_distance_[distance]
+             pSubmatrix.data = pSubmatrix.data.astype(np.float32)
+             pSubmatrix.data /= expected
+             pSubmatrix.data = convertInfsToZeros_ArrayFloat(pSubmatrix.data)
 
     return pSubmatrix
 
