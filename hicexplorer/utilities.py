@@ -324,7 +324,7 @@ def obs_exp_matrix_non_zero(pSubmatrix, exp_matrix = None):
     if exp_matrix:
         expected = _get_expected_matrix(exp_matrix)
         print(pSubmatrix.data.shape, expected.data.shape)
-        #pSubmatrix.data = np.divide( pSubmatrix.data, expected.data)
+        pSubmatrix.data = np.divide( pSubmatrix.data, expected.data)
         pSubmatrix.data = convertInfsToZeros_ArrayFloat(pSubmatrix.data)
     else:
         expected_interactions_in_distance_ = expected_interactions_non_zero(pSubmatrix)
