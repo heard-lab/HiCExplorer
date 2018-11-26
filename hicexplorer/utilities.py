@@ -3,7 +3,7 @@ import sys
 import numpy as np
 import argparse
 from matplotlib import use as mplt_use
-from hicexplorer.hicExpectedMatrix import expected_interactions
+from hicexplorer.hicExpectedMatrix import expected_interactions, _get_expected_matrix
 
 mplt_use('Agg')
 from unidecode import unidecode
@@ -336,7 +336,7 @@ def obs_exp_matrix_non_zero(pSubmatrix):
     return pSubmatrix
 
 
-def obs_exp_matrix(pSubmatrix):
+def obs_exp_matrix(pSubmatrix, exp_matrix = None):
     """
         Creates normalized contact matrix M* by
         dividing each entry by the gnome-wide
@@ -346,7 +346,11 @@ def obs_exp_matrix(pSubmatrix):
         exp_i,j = sum(interactions at distance abs(i-j)) / number of non-zero interactions at abs(i-j)
 
     """
-    expected_interactions_in_distance_ = expected_interactions(pSubmatrix)
+    expected_interactions_in_distance_ = np.empty(pSubmatrix.shape)
+    if exp_matrix:
+        expected_interactions_in_distance_ = _get_expected_matrix(exp_matrix)
+    else:
+        expected_interactions_in_distance_ = expected_interactions(pSubmatrix)
     row, col = pSubmatrix.nonzero()
     distance = np.absolute(row - col).astype(np.int32)
 

@@ -42,6 +42,9 @@ def parse_arguments(args=None):
                            choices=['obs_exp', 'obs_exp_lieberman', 'obs_exp_non_zero', 'pearson', 'covariance', 'norm'],
                            default='obs_exp')
 
+    parserOpt.add_argument('--expectedMatrix', '-exp',
+                           help = 'expected Matrix',
+                           dest = 'exp_matrix')
     parserOpt.add_argument('--chromosomes',
                            help='List of chromosomes to be included in the '
                            'correlation.',
@@ -89,7 +92,7 @@ def _obs_exp_norm(pSubmatrix):
 
 def _obs_exp(pSubmatrix):
 
-    obs_exp_matrix_ = obs_exp_matrix(pSubmatrix)
+    obs_exp_matrix_ = obs_exp_matrix(pSubmatrix, args.exp_matrix)
     obs_exp_matrix_ = convertNansToZeros(csr_matrix(obs_exp_matrix_))
     obs_exp_matrix_ = convertInfsToZeros(csr_matrix(obs_exp_matrix_)).todense()
     return obs_exp_matrix_

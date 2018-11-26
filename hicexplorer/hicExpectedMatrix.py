@@ -53,6 +53,11 @@ def _expected_matrix(matrix):
     return matrix
 
 
+def _get_expected_matrix(matrix):
+    hic_ma = hm.hiCMatrix(matrix)
+    return hic_ma.matrix
+
+
 def main():
     parser = parse_arguments()
     args = parser.parse_args()
