@@ -55,7 +55,7 @@ def _expected_matrix(matrix):
 
 def _get_expected_matrix(matrix):
     hic_ma = hm.hiCMatrix(matrix)
-    return hic_ma.matrix
+    return hic_ma
 
 
 def main():
