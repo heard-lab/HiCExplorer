@@ -323,7 +323,7 @@ def obs_exp_matrix_non_zero(pSubmatrix, exp_matrix = None):
     """
     if exp_matrix:
         expected = _get_expected_matrix(exp_matrix)
-        pSubmatrix.data = np.divide( pSubmatrix.data, expected.data)
+        pSubmatrix = np.divide( pSubmatrix, expected)
         pSubmatrix.data = convertInfsToZeros_ArrayFloat(pSubmatrix.data)
     else:
         expected_interactions_in_distance_ = expected_interactions_non_zero(pSubmatrix)
@@ -352,12 +352,8 @@ def obs_exp_matrix(pSubmatrix, exp_matrix = None):
     """
     if exp_matrix:
         expected = _get_expected_matrix(exp_matrix)
-        #print(len(pSubmatrix.cut_intervals), len(expected.cut_intervals))
-        #pSubmatrix.setMatrix(pSubmatrix.matrix, cut_intervals = expected.cut_intervals)
-        print(pSubmatrix.matrix.shape, expected.matrix.shape)
-        pSubmatrix.matrix = np.divide( pSubmatrix.matrix, expected.matrix)
-        #pSubmatrix.matrix.data = convertInfsToZeros_ArrayFloat(pSubmatrix.matrix.data)
-        np.nan_to_num(pSubmatrix.matrix)
+        pSubmatrix = np.divide( pSubmatrix, expected)
+        np.nan_to_num(pSubmatrix)
     else:
         expected_interactions_in_distance_ = expected_interactions(pSubmatrix)
         row, col = pSubmatrix.nonzero()
@@ -369,7 +365,7 @@ def obs_exp_matrix(pSubmatrix, exp_matrix = None):
              pSubmatrix.data /= expected
              pSubmatrix.data = convertInfsToZeros_ArrayFloat(pSubmatrix.data)
 
-    return pSubmatrix.matrix
+    return pSubmatrix
 
 
 def toString(s):

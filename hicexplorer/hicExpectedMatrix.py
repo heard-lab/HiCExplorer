@@ -22,7 +22,6 @@ def expected_interactions(matrix):
     """
         Computes the expected number of interactions per distance
     """
-
     expected_interactions = np.zeros(matrix.shape[0])
     row, col = matrix.nonzero()
     distance = np.absolute(row - col)
@@ -55,7 +54,7 @@ def _expected_matrix(matrix):
 
 def _get_expected_matrix(matrix):
     hic_ma = hm.hiCMatrix(matrix)
-    return hic_ma
+    return hic_ma.matrix
 
 
 def main():
